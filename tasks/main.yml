@@ -1,0 +1,21 @@
+---
+- name: Install rssh
+  tags: rssh
+  yum: name=rssh
+       enablerepo=rpmforge
+       state=latest
+       update_cache=yes
+  register: rssh_yum
+
+- block:
+    - name: Insert rssh into /etc/shells
+      lineinfile: dest=/etc/shells
+                  line='/usr/bin/rssh'
+    - name: Configure rssh
+      template: src=rssh.conf.j2
+                dest=/etc/rssh.conf
+                owner=root
+                group=root
+                mode=0644
+  tags: rssh
+  when: rssh_yum|success

@@ -1,0 +1,8 @@
+---
+rssh_allowcvs: False
+rssh_allowrdist: False
+rssh_allowrsync: False
+rssh_allowscp: False
+rssh_allowsftp: False
+rssh_logfacility: LOG_USER
+rssh_umask: '022'
