@@ -2,7 +2,7 @@
 - name: Install rssh
   tags: rssh
   yum: name=rssh
-       enablerepo=rpmforge
+       enablerepo=epel-testing
        state=latest
        update_cache=yes
   register: rssh_yum

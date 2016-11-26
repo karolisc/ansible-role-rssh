@@ -31,7 +31,7 @@ Additional variables available, not set by default:
 
 ## Dependencies
 
- * https://galaxy.ansible.com/linuxhq/rpmforge/
+ * https://galaxy.ansible.com/linuxhq/epel/
 
 ## Example Playbook
 

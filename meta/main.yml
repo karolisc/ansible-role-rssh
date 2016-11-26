@@ -1,6 +1,6 @@
 ---
 dependencies:
-  - linuxhq.rpmforge
+  - linuxhq.epel
 galaxy_info:
   author: tkimball83
   description: RHEL/CentOS - Restricted shell for scp/sftp
