@@ -26,7 +26,7 @@ Additional variables available, not set by default:
     rssh_users:
       tkimball:
         umask: '022'
-        access_bits: 00001
+        access_bits: '00001'
         path: /usr/local/chroot
 
 ## Dependencies

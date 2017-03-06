@@ -1,67 +1,19 @@
 # This is the default rssh config file
 
 # set the log facility.  "LOG_USER" and "user" are equivalent.
-{% if rssh_logfacility is defined %}
-logfacility = {{ rssh_logfacility }} 
-{% else %}
-logfacility = LOG_USER 
-{% endif %}
+logfacility = {{ rssh_logfacility if rssh_logfacility is defined else 'LOG_USER' }} 
 
 # Leave these all commented out to make the default action for rssh to lock
 # users out completely...
 
-{% if rssh_allowscp is defined %}
-{%   if rssh_allowscp %}
-allowscp
-{%   else %}
-#allowscp
-{%   endif %}
-{% else %}
-#allowscp
-{% endif %}
-{% if rssh_allowsftp is defined %}
-{%   if rssh_allowsftp %}
-allowsftp
-{%   else %}
-#allowsftp
-{%   endif %}
-{% else %}
-#allowsftp
-{% endif %}
-{% if rssh_allowcvs is defined %}
-{%   if rssh_allowcvs %}
-allowcvs
-{%   else %}
-#allowcvs
-{%   endif %}
-{% else %}
-#allowcvs
-{% endif %}
-{% if rssh_allowrdist is defined %}
-{%   if rssh_allowrdist %}
-allowrdist
-{%   else %}
-#allowrdist
-{%   endif %}
-{% else %}
-#allowrdist
-{% endif %}
-{% if rssh_allowrsync is defined %}
-{%   if rssh_allowrsync %}
-allowrsync
-{%   else %}
-#allowrsync
-{%   endif %}
-{% else %}
-#allowrsync
-{% endif %}
+{{ '' if rssh_allowscp is defined and rssh_allowscp else '#' }}allowscp
+{{ '' if rssh_allowsftp is defined and rssh_allowsftp else '#' }}allowsftp
+{{ '' if rssh_allowcvs is defined and rssh_allowcvs else '#' }}allowcvs
+{{ '' if rssh_allowrdist is defined and rssh_allowrdist else '#' }}allowrdist
+{{ '' if rssh_allowrsync is defined and rssh_allowrsync else '#' }}allowrsync
 
 # set the default umask
-{% if rssh_umask is defined %}
-umask = {{ rssh_umask }}
-{% else %}
-umask = 022
-{% endif %}
+umask = {{ rssh_umask if rssh_umask is defined else '022' }}
 
 # If you want to chroot users, use this to set the directory where the root of
 # the chroot jail will be located.
@@ -77,18 +29,20 @@ chrootpath = "{{ rssh_chrootpath }}"
 # space... as in this example.
 #chrootpath = "/usr/local/my chroot"
 
-##########################################
-# EXAMPLES of configuring per-user options
-
 {% if rssh_users is defined %}
 {%   for username in rssh_users|sort %}
-{%     if rssh_users[username]['path'] is defined %}
+{%     if rssh_users[username]['umask'] is defined and rssh_users[username]['access_bits'] is defined %}
+{%       if rssh_users[username]['path'] is defined %}
 user="{{ username }}:{{ rssh_users[username]['umask'] }}:{{ rssh_users[username]['access_bits'] }}:{{ rssh_users[username]['path'] }}"
-{%     else %}
+{%       else %}
 user="{{ username }}:{{ rssh_users[username]['umask'] }}:{{ rssh_users[username]['access_bits'] }}"
+{%       endif %}
 {%     endif %}
 {%   endfor %}
 {% else %}
+##########################################
+# EXAMPLES of configuring per-user options
+
 #user=rudy:077:00010:  # the path can simply be left out to not chroot
 #user=rudy:077:00010   # the ending colon is optional
 
