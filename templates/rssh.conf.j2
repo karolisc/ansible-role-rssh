@@ -13,12 +13,15 @@ chrootpath = "{{ rssh_chrootpath }}"
 logfacility = {{ rssh_logfacility }} 
 umask = {{ rssh_umask }}
 {% if rssh_users is defined %}
-{%   for username in rssh_users|sort %}
-{%     if rssh_users[username]['umask'] is defined and rssh_users[username]['access_bits'] is defined %}
-{%       if rssh_users[username]['path'] is defined %}
-user="{{ username }}:{{ rssh_users[username]['umask'] }}:{{ rssh_users[username]['access_bits'] }}:{{ rssh_users[username]['path'] }}"
+{%   for u in rssh_users|sort %}
+{%     if rssh_users[u].umask is defined and rssh_users[u].access_bits is defined %}
+{%       set access_bits = rssh_users[u].access_bits %}
+{%       set umask = rssh_users[u].umask %}
+{%       if rssh_users[u].path is defined %}
+{%         set path = rssh_users[u].path %}
+user = "{{ u }}:{{ umask }}:{{ access_bits }}:{{ path }}"
 {%       else %}
-user="{{ username }}:{{ rssh_users[username]['umask'] }}:{{ rssh_users[username]['access_bits'] }}"
+user = "{{ u }}:{{ umask }}:{{ access_bits }}"
 {%       endif %}
 {%     endif %}
 {%   endfor %}
