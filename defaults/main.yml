@@ -1,2 +1,11 @@
 ---
+rssh_allow:
+  allowcvs: False
+  allowrdist: False
+  allowrsync: False
+  allowscp: False
+  allowsftp: False
+rssh_logfacility: LOG_USER
+rssh_umask: '022'
+rssh_users: {}
 ...

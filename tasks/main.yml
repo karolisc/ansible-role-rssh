@@ -1,20 +1,23 @@
 ---
-- name: Ensure rssh package is installed
+- name: Ensure that the rssh package is installed
   tags: rssh
+  become: true
   yum:
     enablerepo: epel-testing
     name: rssh
     state: present
-    update_cache: yes
   register: rssh_yum
 
 - block:
-  - name: Insert rssh into /etc/shells
+  - name: Applying shell configuration into /etc/shells
     lineinfile:
       dest: /etc/shells
       line: '/usr/bin/rssh'
+      owner: root
+      group: root
+      mode: 0644
 
-  - name: Applying rssh configuration
+  - name: Applying rssh.conf configurations
     template:
       src: rssh.conf.j2
       dest: /etc/rssh.conf
@@ -22,5 +25,6 @@
       group: root
       mode: 0644
   tags: rssh
+  become: true
   when: rssh_yum|success
 ...

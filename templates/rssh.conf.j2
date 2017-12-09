@@ -1,34 +1,17 @@
-# This is the default rssh config file
+# {{ ansible_managed }}
 
-# set the log facility.  "LOG_USER" and "user" are equivalent.
-logfacility = {{ rssh_logfacility if rssh_logfacility is defined else 'LOG_USER' }} 
-
-# Leave these all commented out to make the default action for rssh to lock
-# users out completely...
-
-{{ '' if rssh_allowscp is defined and rssh_allowscp else '#' }}allowscp
-{{ '' if rssh_allowsftp is defined and rssh_allowsftp else '#' }}allowsftp
-{{ '' if rssh_allowcvs is defined and rssh_allowcvs else '#' }}allowcvs
-{{ '' if rssh_allowrdist is defined and rssh_allowrdist else '#' }}allowrdist
-{{ '' if rssh_allowrsync is defined and rssh_allowrsync else '#' }}allowrsync
-
-# set the default umask
-umask = {{ rssh_umask if rssh_umask is defined else '022' }}
-
-# If you want to chroot users, use this to set the directory where the root of
-# the chroot jail will be located.
-#
-# if you DO NOT want to chroot users, LEAVE THIS COMMENTED OUT.
+{% if rssh_allow is defined %}
+{%   for key, value in rssh_allow.iteritems()|sort %}
+{%     if value is sameas true %}
+{{ key }}
+{%     endif %}
+{%   endfor %}
+{% endif %}
 {% if rssh_chrootpath is defined %}
 chrootpath = "{{ rssh_chrootpath }}"
-{% else %}
-# chrootpath = /usr/local/chroot
 {% endif %}
-
-# You can quote anywhere, but quotes not required unless the path contains a
-# space... as in this example.
-#chrootpath = "/usr/local/my chroot"
-
+logfacility = {{ rssh_logfacility }} 
+umask = {{ rssh_umask }}
 {% if rssh_users is defined %}
 {%   for username in rssh_users|sort %}
 {%     if rssh_users[username]['umask'] is defined and rssh_users[username]['access_bits'] is defined %}
@@ -39,29 +22,4 @@ user="{{ username }}:{{ rssh_users[username]['umask'] }}:{{ rssh_users[username]
 {%       endif %}
 {%     endif %}
 {%   endfor %}
-{% else %}
-##########################################
-# EXAMPLES of configuring per-user options
-
-#user=rudy:077:00010:  # the path can simply be left out to not chroot
-#user=rudy:077:00010   # the ending colon is optional
-
-#user=rudy:011:00100:  # cvs, with no chroot 
-#user=rudy:011:01000:  # rdist, with no chroot
-#user=rudy:011:10000:  # rsync, with no chroot
-#user="rudy:011:00001:/usr/local/chroot"  # whole user string can be quoted
-#user=rudy:01"1:00001:/usr/local/chroot"  # or somewhere in the middle, freak!
-#user=rudy:'011:00001:/usr/local/chroot'  # single quotes too
-
-# if your chroot_path contains spaces, it must be quoted...
-# In the following examples, the chroot_path is "/usr/local/my chroot"
-#user=rudy:011:00001:"/usr/local/my chroot"  # scp with chroot
-#user=rudy:011:00010:"/usr/local/my chroot"  # sftp with chroot
-#user=rudy:011:00011:"/usr/local/my chroot"  # both with chroot
-
-# Spaces before or after the '=' are fine, but spaces in chrootpath need
-# quotes.
-#user = "rudy:011:00001:/usr/local/my chroot"  
-#user = "rudy:011:00001:/usr/local/my chroot"  # neither do comments at line end
 {% endif %}
-

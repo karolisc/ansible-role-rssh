@@ -12,22 +12,19 @@ None
 
 Available variables are listed below, along with default values:
 
-    rssh_allowcvs: False
-    rssh_allowrdist: False
-    rssh_allowrsync: False
-    rssh_allowscp: False
-    rssh_allowsftp: False
+    rssh_allow:
+      allowcvs: False
+      allowrdist: False
+      allowrsync: False
+      allowscp: False
+      allowsftp: False
     rssh_logfacility: LOG_USER
     rssh_umask: '022'
+    rssh_users: {}
 
-Additional variables available, not set by default:
+Additional variables not defined by default:
 
     rssh_chrootpath: /usr/local/chroot
-    rssh_users:
-      tkimball:
-        umask: '022'
-        access_bits: '00001'
-        path: /usr/local/chroot
 
 ## Dependencies
 
@@ -38,11 +35,19 @@ Additional variables available, not set by default:
     - hosts: servers
       roles:
         - role: linuxhq.rssh
+          rssh_allow:
+            allowrsync: True
+            allowscp: True
           rssh_chrootpath: /usr/local/chroot
+          rssh_users:
+            tkimball:
+              umask: '022'
+              access_bits: '00001'
+              path: /usr/local/chroot/tkimbal
 
 ## License
 
-BSD
+GPLv3
 
 ## Author Information
 
