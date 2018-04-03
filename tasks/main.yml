@@ -8,23 +8,53 @@
     state: present
   register: rssh_yum
 
-- block:
-  - name: Applying shell configuration into /etc/shells
-    lineinfile:
-      dest: /etc/shells
-      line: '/usr/bin/rssh'
-      owner: root
-      group: root
-      mode: 0644
-
-  - name: Applying rssh.conf configurations
-    template:
-      src: rssh.conf.j2
-      dest: /etc/rssh.conf
-      owner: root
-      group: root
-      mode: 0644
+- name: Applying shell configuration into /etc/shells
   tags: rssh
   become: true
-  when: rssh_yum|success
+  lineinfile:
+    dest: /etc/shells
+    line: /usr/bin/rssh
+    owner: root
+    group: root
+    mode: 0644
+  register: rssh_lineinfile
+  when:
+    - rssh_yum is success
+
+- name: Applying rssh.conf configurations
+  tags: rssh
+  become: true
+  template:
+    src: rssh.conf.j2
+    dest: /etc/rssh.conf
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - rssh_lineinfile is success
+    - rssh_yum is success
+
+- name: Attempting to gather user information, if applicable
+  tags: rssh
+  getent:
+    database: passwd
+    split: ':'
+  when:
+    - rssh_users|length > 0
+    - rssh_lineinfile is success
+    - rssh_yum is success
+
+- name: Appending user(s) to rsshusers group, if applicable
+  tags: rssh
+  become: true
+  user:
+    append: yes
+    groups: rsshusers
+    name: "{{ item }}"
+  with_items: "{{ rssh_users }}"
+  when:
+    - item in getent_passwd
+    - rssh_users|length > 0
+    - rssh_lineinfile is success
+    - rssh_yum is success
 ...
