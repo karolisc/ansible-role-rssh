@@ -1,6 +1,5 @@
 ---
-dependencies:
-  - linuxhq.epel
+dependencies: []
 galaxy_info:
   author: tkimball83
   description: Linux - Restricted shell for scp/sftp
