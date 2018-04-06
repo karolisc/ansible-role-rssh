@@ -8,7 +8,7 @@
     state: present
   register: rssh_yum
 
-- name: Applying shell configuration into /etc/shells
+- name: Attempting to inject /usr/bin/rssh into /etc/shells
   tags: rssh
   become: true
   lineinfile:
@@ -21,7 +21,7 @@
   when:
     - rssh_yum is success
 
-- name: Applying rssh.conf configurations
+- name: Attempting to overlay rssh configurations
   tags: rssh
   become: true
   template:
@@ -34,27 +34,58 @@
     - rssh_lineinfile is success
     - rssh_yum is success
 
-- name: Attempting to gather user information, if applicable
+- name: Attempting to apply group configurations
   tags: rssh
-  getent:
-    database: passwd
-    split: ':'
+  become: true
+  no_log: true
+  group:
+    gid: "{{ item.gid|default(omit) }}"
+    name: "{{ item.group|default(item.name) }}"
+    state: "{{ item.state|default('present') }}"
+    system: "{{ item.system|default('no') }}"
+  register: rssh_group
+  with_items: "{{ rssh_users }}"
   when:
+    - item.name is defined
     - rssh_users|length > 0
     - rssh_lineinfile is success
     - rssh_yum is success
 
-- name: Appending user(s) to rsshusers group, if applicable
+- name: Attempting to apply user configurations
   tags: rssh
   become: true
+  no_log: true
   user:
-    append: yes
+    append: "{{ item.append|default('no') }}"
+    comment: "{{ item.comment|default(item.name) }}"
+    createhome: "{{ item.createhome|default(omit) }}"
+    generate_ssh_key: "{{ item.generate_ssh_key|default('no') }}"
+    group: "{{ item.group|default(item.name) }}"
     groups: rsshusers
-    name: "{{ item }}"
+    home: "{{ item.path + '/home/' + item.name if item.path is defined else omit }}"
+    local: "{{ item.local|default(omit) }}"
+    login_class: "{{ item.login_class|default(omit) }}"
+    move_home: "{{ item.move_home|default('no') }}"
+    name: "{{ item.name }}"
+    non_unique: "{{ item.non_unique|default('no') }}"
+    password: "{{ item.password|default('!!') }}"
+    seuser: "{{ item.seuser|default(omit) }}"
+    shell: /usr/bin/rssh
+    skeleton: "{{ item.skeleton|default(omit) }}"
+    ssh_key_bits: "{{ item.ssh_key_bits|default(omit) }}"
+    ssh_key_comment: "{{ item.ssh_key_comment|default(item.name) }}"
+    ssh_key_file: "{{ item.ssh_key_file|default(omit) }}"
+    ssh_key_passphrase: "{{ item.ssh_key_passphrase|default(omit) }}"
+    ssh_key_type: "{{ item.ssh_key_type|default(omit) }}"
+    state: "{{ item.state|default('present') }}"
+    system: "{{ item.system|default('no') }}"
+    uid: "{{ item.uid|default(omit) }}"
+    update_password: "{{ item.update_password|default('always') }}"
   with_items: "{{ rssh_users }}"
   when:
-    - item in getent_passwd
+    - item.name is defined
     - rssh_users|length > 0
+    - rssh_group is success
     - rssh_lineinfile is success
     - rssh_yum is success
 ...

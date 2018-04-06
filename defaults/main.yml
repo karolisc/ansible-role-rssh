@@ -1,11 +1,10 @@
 ---
-rssh_allow:
-  allowcvs: False
-  allowrdist: False
-  allowrsync: False
-  allowscp: False
-  allowsftp: False
+rssh_allowcvs: false
+rssh_allowrdist: false
+rssh_allowrsync: false
+rssh_allowscp: false
+rssh_allowsftp: false
 rssh_logfacility: LOG_USER
 rssh_umask: '022'
-rssh_users: {}
+rssh_users: []
 ...

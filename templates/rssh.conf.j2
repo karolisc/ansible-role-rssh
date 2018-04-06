@@ -1,29 +1,23 @@
 # {{ ansible_managed }}
 
-{% if rssh_allow is defined %}
-{%   for key, value in rssh_allow.iteritems()|sort %}
-{%     if value is sameas true %}
-{{ key }}
-{%     endif %}
-{%   endfor %}
-{% endif %}
+{{ '' if rssh_allowscp|bool else '#' }}allowscp
+{{ '' if rssh_allowsftp|bool else '#' }}allowsftp
+{{ '' if rssh_allowcvs|bool else '#' }}allowcvs
+{{ '' if rssh_allowrdist|bool else '#' }}allowrdist
+{{ '' if rssh_allowrsync|bool else '#' }}allowrsync
+
 {% if rssh_chrootpath is defined %}
 chrootpath = "{{ rssh_chrootpath }}"
 {% endif %}
 logfacility = {{ rssh_logfacility }} 
 umask = {{ rssh_umask }}
-{% if rssh_users is defined %}
-{%   for u in rssh_users|sort %}
-{%     if rssh_users[u].umask is defined and rssh_users[u].access_bits is defined %}
-{%       set access_bits = rssh_users[u].access_bits %}
-{%       set umask = rssh_users[u].umask %}
-{%       if rssh_users[u].path is defined %}
-{%         set path = rssh_users[u].path %}
-user = "{{ u }}:{{ umask }}:{{ access_bits }}:{{ path }}"
-{%       else %}
-user = "{{ u }}:{{ umask }}:{{ access_bits }}"
-{%       endif %}
-{%     endif %}
-{%   endfor %}
-{% endif %}
 
+{% for u in rssh_users|sort %}
+{%   if u.access_bits is defined and u.name is defined and u.umask is defined %}
+{%     if u.path is defined %}
+user = "{{ u.name }}:{{ u.umask }}:{{ u.access_bits }}:{{ u.path }}"
+{%     else %}
+user = "{{ u.name }}:{{ u.umask }}:{{ u.access_bits }}"
+{%     endif %}
+{%   endif %}
+{% endfor %}
