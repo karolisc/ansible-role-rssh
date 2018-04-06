@@ -27,7 +27,7 @@ Additional variables not defined by default:
 
 ## Dependencies
 
- * https://galaxy.ansible.com/linuxhq/epel/
+None
 
 ## Example Playbook
 

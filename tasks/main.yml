@@ -3,7 +3,6 @@
   tags: rssh
   become: true
   package:
-    enablerepo: epel-testing
     name: rssh
     state: present
   register: rssh_package
