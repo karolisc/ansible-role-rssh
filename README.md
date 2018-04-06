@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/linuxhq/ansible-role-rssh.svg?branch=master)](https://travis-ci.org/linuxhq/ansible-role-rssh)
 
-RHEL/CentOS - Restricted shell for scp/sftp
+Linux - Restricted shell for scp/sftp
 
 ## Requirements
 

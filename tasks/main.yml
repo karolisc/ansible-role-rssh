@@ -2,11 +2,11 @@
 - name: Ensure that the rssh package is installed
   tags: rssh
   become: true
-  yum:
+  package:
     enablerepo: epel-testing
     name: rssh
     state: present
-  register: rssh_yum
+  register: rssh_package
 
 - name: Attempting to inject /usr/bin/rssh into /etc/shells
   tags: rssh
@@ -19,7 +19,7 @@
     mode: 0644
   register: rssh_lineinfile
   when:
-    - rssh_yum is success
+    - rssh_package is success
 
 - name: Attempting to overlay rssh configurations
   tags: rssh
@@ -32,7 +32,7 @@
     mode: 0644
   when:
     - rssh_lineinfile is success
-    - rssh_yum is success
+    - rssh_package is success
 
 - name: Attempting to apply group configurations
   tags: rssh
@@ -49,7 +49,7 @@
     - item.name is defined
     - rssh_users|length > 0
     - rssh_lineinfile is success
-    - rssh_yum is success
+    - rssh_package is success
 
 - name: Attempting to apply user configurations
   tags: rssh
@@ -87,5 +87,5 @@
     - rssh_users|length > 0
     - rssh_group is success
     - rssh_lineinfile is success
-    - rssh_yum is success
+    - rssh_package is success
 ...
