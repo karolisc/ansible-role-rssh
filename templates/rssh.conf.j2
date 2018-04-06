@@ -1,10 +1,10 @@
 # {{ ansible_managed }}
 
-{{ '' if rssh_allowscp|bool else '#' }}allowscp
-{{ '' if rssh_allowsftp|bool else '#' }}allowsftp
 {{ '' if rssh_allowcvs|bool else '#' }}allowcvs
 {{ '' if rssh_allowrdist|bool else '#' }}allowrdist
 {{ '' if rssh_allowrsync|bool else '#' }}allowrsync
+{{ '' if rssh_allowscp|bool else '#' }}allowscp
+{{ '' if rssh_allowsftp|bool else '#' }}allowsftp
 
 {% if rssh_chrootpath is defined %}
 chrootpath = "{{ rssh_chrootpath }}"
