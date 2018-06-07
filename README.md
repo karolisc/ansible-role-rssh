@@ -1,6 +1,8 @@
 # ansible-role-rssh
 
 [![Build Status](https://travis-ci.org/linuxhq/ansible-role-rssh.svg?branch=master)](https://travis-ci.org/linuxhq/ansible-role-rssh)
+[![Ansible Galaxy](https://img.shields.io/badge/ansible--galaxy-rssh-blue.svg?style=flat)](https://galaxy.ansible.com/linuxhq/rssh)
+[![License](https://img.shields.io/badge/license-GPLv3-brightgreen.svg?style=flat)](COPYING)
 
 Linux - Restricted shell for scp/sftp
 
