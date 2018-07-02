@@ -1,6 +1,7 @@
 ---
 dependencies: []
 galaxy_info:
+  role_name: rssh
   author: tkimball83
   description: Linux - Restricted shell for scp/sftp
   license: GPLv3
