@@ -5,7 +5,6 @@
   package:
     name: rssh
     state: present
-  register: rssh_package
 
 - name: Attempting to inject /usr/bin/rssh into /etc/shells
   tags: rssh
@@ -16,9 +15,6 @@
     owner: root
     group: root
     mode: 0644
-  register: rssh_lineinfile
-  when:
-    - rssh_package is success
 
 - name: Attempting to overlay rssh configurations
   tags: rssh
@@ -29,9 +25,6 @@
     owner: root
     group: root
     mode: 0644
-  when:
-    - rssh_lineinfile is success
-    - rssh_package is success
 
 - name: Attempting to apply group configurations
   tags: rssh
@@ -42,18 +35,16 @@
     name: "{{ item.group|default(item.name) }}"
     state: "{{ item.state|default('present') }}"
     system: "{{ item.system|default('no') }}"
-  register: rssh_group
-  with_items: "{{ rssh_users }}"
+  loop: "{{ rssh_users }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - item.name is defined
     - rssh_users|length > 0
-    - rssh_lineinfile is success
-    - rssh_package is success
 
 - name: Attempting to apply user configurations
   tags: rssh
   become: true
-  no_log: true
   user:
     append: "{{ item.append|default('no') }}"
     comment: "{{ item.comment|default(item.name) }}"
@@ -80,11 +71,10 @@
     system: "{{ item.system|default('no') }}"
     uid: "{{ item.uid|default(omit) }}"
     update_password: "{{ item.update_password|default('always') }}"
-  with_items: "{{ rssh_users }}"
+  loop: "{{ rssh_users }}"
+  loop_control:
+    label: "{{ item.name }}"
   when:
     - item.name is defined
     - rssh_users|length > 0
-    - rssh_group is success
-    - rssh_lineinfile is success
-    - rssh_package is success
 ...
