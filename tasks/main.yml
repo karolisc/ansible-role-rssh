@@ -29,7 +29,6 @@
 - name: Attempting to apply group configurations
   tags: rssh
   become: true
-  no_log: true
   group:
     gid: "{{ item.gid|default(omit) }}"
     name: "{{ item.group|default(item.name) }}"
