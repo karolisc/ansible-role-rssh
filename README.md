@@ -41,10 +41,11 @@ None
           rssh_chrootpath: /usr/local/chroot
           rssh_users:
             - name: tkimball
-              access_bits: '000011'
+              access_bits: '00001'
               path: /usr/local/chroot
               umask: '022'
 
+``access_bits`` -  Five binary digits, which indicate whether the user is allowed to use rsync, rdist, cvs, sftp, and scp, in that order. One means the command is allowed, zero means it is not.
 ## License
 
 Copyright (C) 2018 Taylor Kimball <tkimball@linuxhq.org>
