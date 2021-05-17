@@ -6,6 +6,13 @@
     name: rssh
     state: present
 
+- name: Ensure group "rsshusers" exists
+  tags: rssh
+  become: true
+  group:
+    name: rsshusers
+    state: present
+
 - name: Attempting to inject /usr/bin/rssh into /etc/shells
   tags: rssh
   become: true
