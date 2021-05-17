@@ -12,7 +12,7 @@ chrootpath = "{{ rssh_chrootpath }}"
 logfacility = {{ rssh_logfacility }} 
 umask = {{ rssh_umask }}
 
-{% for u in rssh_users|sort %}
+{% for u in rssh_users|sort(attribute='name') %}
 {%   if u.access_bits is defined and u.name is defined and u.umask is defined %}
 {%     if u.path is defined %}
 user = "{{ u.name }}:{{ u.umask }}:{{ u.access_bits }}:{{ u.path }}"
